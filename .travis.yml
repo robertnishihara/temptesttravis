@@ -1,14 +1,27 @@
 sudo: required
-
 language: generic
-
 matrix:
   include:
-    # Build Linux wheels.
-    - os: linux
-      dist: trusty
-      install:
-        - env
-        - echo $TRAVIS_EVENT_TYPE
-        - echo $TRAVIS_COMMIT_RANGE
-        - echo $TRAVIS_COMMIT
+  - os: linux
+    dist: trusty
+    env: UPLOAD_TO_S3=1
+    install:
+    - mkdir .whl
+    - echo "AAAAAA" >> .whl/file1.txt
+    - echo "BBBBBB" >> .whl/file2.txt
+deploy:
+  provider: s3
+  access_key_id: AKIAU6DMUCJUFL3EX3SM
+  secret_access_key:
+    secure: iIIJqLAS/LWUB8+cC6KeKy/f2DTZBbhhmw1rIn7ULj6pPtk9AxHATV+pVHQ6nAFp2tITLh+mGnTg01ZHuqSK79MfvMYre1nzZ28T1H6ts9CwQXO211W+aNuLbOxNSoIKX0FmpLWyk8XqP6EETPEwYDw1CMeBe5P+3VTkv2WzgCYb/EEgPrTxuYTLGFKa7pOOqw5y9JrkKU5X/zuBJE0EEpvKRhCI9pRQSMNdR9myQvddqBHn0I/iNKJQlbkRRHujiMV1auzQBrxoJYoMF8XSeBa/YO6tvlRfJdSyRkGSj7eJEAcCpNRdPLvqTJC4duGFUefE6qmAgUc79R6IlMGFTS5b25vzLceLccKiOtNGHWl17M/5Zh2gdre81h6ESyFYQOFTbfIQ80BNOtUFc4W1LN4s6br38DUwLIKr7MWruT2sctMJ/bC90x9W4zpLWKjRhjHu5Ygyb5bpbpf+dxZViRFY/0PtcNmMdGFHwKSmohO119rc7GwOgol9VsBLiVPyUWoTkcSkKtgF7VEs6GY8+nkx/UrDqcXyvhUu6iBNFPd9g4uRVWEuVSupLmAw0RoigOyljTUIMw/p7n3zLpLEXzlVn0sg3lM/lXD9ImMiBN5oCiLmyRZmnzQ/6RS/g3c+cpy3jNTkdlfuAMgToimMxJA7WKVVBjDV97dC4+4jxPs=
+  acl: public_read
+  bucket: ray-wheels
+  region: us-west-2
+  skip_cleanup: true
+  local_dir: ".whl"
+  upload-dir: "$TRAVIS_COMMIT"
+  only:
+  - master
+  on:
+    repo: robertnishihara/testtravistobintray
+    condition: "$UPLOAD_TO_S3 = 1 || $DEFINITELY_UPLOAD_TO_S3 = 1"
