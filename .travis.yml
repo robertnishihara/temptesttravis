@@ -19,9 +19,9 @@ deploy:
   region: us-west-2
   skip_cleanup: true
   local_dir: ".whl"
-  upload-dir: "$TRAVIS_COMMIT"
+  upload-dir: "$TRAVIS_BRANCH/$TRAVIS_COMMIT"
   only:
   - master
   on:
-    repo: robertnishihara/testtravistobintray
+    repo: robertnishihara/temptesttravis
     condition: "$UPLOAD_TO_S3 = 1 || $DEFINITELY_UPLOAD_TO_S3 = 1"
